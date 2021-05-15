@@ -5,13 +5,17 @@ import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,7 +89,7 @@ int status3 =1;
                  case UserInput.MAPPING_COLOR_OF_SECOND:{  
                   
                        if(!color[1]){
-                       secondPerson.getBody().setColor("Color",ColorRGBA.Green);
+                       secondPerson.getBody().setColor("Color",ColorRGBA.Green );
                        color[1]= true;
                        }else{
                            secondPerson.getBody().setColor("Color", ColorRGBA.Blue);
@@ -174,9 +178,12 @@ int status3 =1;
             if(!isPressed){
               
                 
-                    firstPerson.getAll().removeControl(ctr1);
-                     secondPerson.getAll().removeControl(ctr2);
-                      thirdPerson.getAll().removeControl(ctr3);
+               firstPerson.getAll().removeControl(ctr1);
+                 
+               secondPerson.getAll().removeControl(ctr2);
+                 
+               thirdPerson.getAll().removeControl(ctr3);
+                    
                     firstPerson.getBody().setColor("Color", ColorRGBA.Red);
                     secondPerson.getBody().setColor("Color", ColorRGBA.Blue);
                     thirdPerson.getBody().setColor("Color", ColorRGBA.Gray);
@@ -185,6 +192,7 @@ int status3 =1;
                     firstPerson.getAll().attachChild(((Person)firstDefault.clone()).getAll().getChild("hat"));
                     secondPerson.getAll().attachChild(((Person)secondDefault.clone()).getAll().getChild("hat"));
                     thirdPerson.getAll().attachChild(((Person)thirdDefault.clone()).getAll().getChild("hat"));
+                  
                     firstPerson.getAll().setLocalRotation(((Person)firstDefault.clone()).getAll().getLocalRotation());
                     secondPerson.getAll().setLocalRotation(((Person)secondDefault.clone()).getAll().getLocalRotation());
                     thirdPerson.getAll().setLocalRotation(((Person)thirdDefault.clone()).getAll().getLocalRotation());
@@ -524,17 +532,29 @@ int status3 =1;
         this.initInstances();
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
+        
      
         firstPerson = new Person(FIRST,mat.clone());
    
         secondPerson = new Person(SECOND,mat.clone());
         
         thirdPerson = new Person(THIRD,mat.clone());
+        
+ 
        
         Node node1 = firstPerson.personToNode();
         
         Node node2 = secondPerson.personToNode();
         Node node3 = thirdPerson.personToNode();
+        
+        initHeads();
+        
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White);
+        
+        
+      
+       
           try{
             this.firstDefault =(Person)firstPerson.clone();
             this.secondDefault =(Person) secondPerson.clone();
@@ -546,16 +566,33 @@ int status3 =1;
             
         }
         
+          
+       
+            
         rootNode.attachChild(node1);
        
         rootNode.attachChild(node2);
        
         rootNode.attachChild(node3);
+        rootNode.addLight(al);
+        
         
       
         
     }
-    
+    public void initHeads()
+    {
+        
+        Spatial sp1 = assetManager.loadModel("Models/HEAD1.j3o");
+        firstPerson.setHeadModel(sp1);
+         
+          Spatial sp2 = assetManager.loadModel("Models/HEAD2.j3o");
+        secondPerson.setHeadModel(sp2);
+        
+             Spatial sp3 = assetManager.loadModel("Models/HEAD3.j3o");
+        thirdPerson.setHeadModel(sp3);
+        
+    }
     @Override
     public void simpleUpdate(float tpf) {
         

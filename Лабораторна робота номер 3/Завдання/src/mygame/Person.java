@@ -21,13 +21,15 @@ import java.util.List;
 
 /**
  *
- * @author Pavel
+ * @author Home
  */
 public class Person implements Cloneable{
      private static int count=0;
      private  Material body;
      private  Material hat;
      private Node all;
+     private Spatial head;
+     private Node person;
     public Person(Material body,Material hat){
       this.body = body;
       this.hat = hat;
@@ -45,7 +47,7 @@ public class Person implements Cloneable{
             
     public Node personToNode(){
         Geometry bodys = new Geometry("body",new Sphere(100,100,0.8f));
-        Geometry head = new Geometry("head",new Box(0.5f,0.5f,0.5f));
+        this.head = new Geometry("head",new Box(0.5f,0.5f,0.5f));
         Geometry leftHand = new Geometry("leftHand",new Box(0.5f,0.5f,0.5f));
         Geometry rightHand = new Geometry("rightHand",new Box(0.5f,0.5f,0.5f));
         Geometry leftLeg = new Geometry("leftLeg",new Box(0.5f,0.6f,0.5f));
@@ -58,7 +60,7 @@ public class Person implements Cloneable{
         crown.move(0,0,0.3f);
         hatElements.rotate(-FastMath.PI/2,0,0);
         hatElements.move(0,2.5f,0);
-        Node person = new Node("Body");
+         this.person = new Node("Body");
         person.attachChild(leftLeg);
         person.attachChild(rightLeg);
         person.attachChild(leftHand);
@@ -98,11 +100,41 @@ public class Person implements Cloneable{
     @Override
     protected Object clone()throws CloneNotSupportedException
     {
-        Person person = (Person)super.clone();
-        person.all = (Node)person.all.clone();
-        person.body = (Material)person.body.clone();
-        person.hat = (Material)person.hat.clone();
-        return person;
+        Person person1 = (Person)super.clone();
+        person1.all = (Node)person1.all.clone();
+        person1.body = (Material)person1.body.clone();
+        person1.hat = (Material)person1.hat.clone();
+        person1.person = (Node)person1.person.clone();
+     
+        person1.head = (Spatial)person1.head.clone();
+        
+        
+        return person1;
     }
+    public void setHeadModel(Spatial head2)
+    {
+        
+        person.detachChild(head);
+       
+        this.head = head2;
+        head.setLocalTranslation(Vector3f.ZERO);
+        
     
+         head.move(0,1.3F,0);
+        
+        person.attachChild(head);
+        
+        
+    }
+    public void setHead(Spatial head2)
+    {
+         person.detachChild(head);
+          head = head2;
+         head.setMaterial(body);
+      person.attachChild(head);
+    }
+    public Spatial getHead()
+    {
+        return head;
+    }
 }
